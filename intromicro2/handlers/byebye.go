@@ -14,5 +14,5 @@ func NewGoodBye(l *log.Logger) *Goodbye {
 }
 
 func (g *Goodbye) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	rw.Write([]byte("I'm a microservice in the making"))
+	rw.Write([]byte("Later dudez! "))
 }
