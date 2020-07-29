@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"github.com/jnprogrammer/go_microservices/product-api/data"
 	"log"
 	"net/http"
@@ -15,11 +14,15 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
+// how standard GO does
+//func (p *Products) ServeHTTP(rw http.ResponseWriter, h *http.Request){
+//
+//}
+
 func (p *Products) ServeHTTP(rw http.ResponseWriter, h *http.Request) {
 	lp := data.GetProducts()
-	d, err := json.Marshal(lp)
+	err := lp.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
 	}
-	rw.Write(d)
 }
