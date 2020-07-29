@@ -15,7 +15,7 @@ type Product struct {
 	price       float32 `json:"price"`
 	SKU         string  `json:"sku"`
 	CreatedOn   string  `json:"-"`
-	UpdatedOn   string  `json:"-"` //come back later and recieve the data
+	UpdatedOn   string  `json:"-"` //come back later and receive the data
 	DeleteOn    string  `json:"-"`
 }
 
