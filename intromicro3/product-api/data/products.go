@@ -5,14 +5,18 @@ import "time"
 // Product defines the structure for an API product
 
 type Product struct {
-	ID          int
-	Name        string
-	Description string
-	price       float32
-	SKU         string
-	CreatedOn   string
-	UpdatedOn   string
-	DeleteOn    string
+	ID          int     `json:"id"` //struct tags look up in docs
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	price       float32 `json:"price"`
+	SKU         string  `json:"sku"`
+	CreatedOn   string  `json:"-"`
+	UpdatedOn   string  `json:"-"` //come back later and recieve the data
+	DeleteOn    string  `json:"-"`
+}
+
+func GetProducts() []*Product { //returns our product list
+	return productList
 }
 
 var productList = []*Product{
