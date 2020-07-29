@@ -20,9 +20,9 @@ func main() {
 	s := &http.Server{
 		Addr:         ":8710",
 		Handler:      servemux,
-		IdleTimeout:  120 * time.Second,
-		ReadTimeout:  1 * time.Second,
-		WriteTimeout: 1 * time.Second,
+		IdleTimeout:  120 * time.Second, //max time for connections using TCP keep-alive
+		ReadTimeout:  1 * time.Second,   //max time to read request from the client
+		WriteTimeout: 1 * time.Second,   //max time to write response to client
 	}
 
 	go func() {
