@@ -1,2 +1,15 @@
-I'm following this series of 20 videos, It helps to practice the whole art.
+I'm following this series of 20 videos microservices.
 https://www.youtube.com/watch?v=VzBGi_n65iU&t=432s
+
+
+Commands to run from terminal to test
+
+ curl localhost:8710/1 -XPUT -d '{"name":"teaD", "description":"a nice cup of teas"}' | jq
+ curl localhost:8710 | jq
+
+ curl localhost:8710 -POST
+curl localhost:8710 -d "{}"
+curl localhost:8710 -POST
+curl localhost:8710
+curl localhost:8710 -d '{}' | jq
+curl localhost:8710 -vd '{}' | jq
