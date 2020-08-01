@@ -82,6 +82,7 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p Products) updateProducts(id int, rw http.ResponseWriter, r *http.Request) {
+
 	p.l.Println("Handle update product")
 
 	prod := &data.Product{}

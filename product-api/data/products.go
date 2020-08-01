@@ -31,11 +31,11 @@ type Products []*Product
 
 /*
 ToJSON serializes the contents of the collection to JSON
-NewEncoder provides better perfomance than json.Unmarshal as it doesn't
+NewEncoder provides better performance than json.Unmarshal as it doesn't
 have to buffer the output into an in memory slice of bytes
 this reduces allocations and the overheads of the service
 
-htts://golang.org./pkg/encoding/json/#NewEncoder
+https://golang.org./pkg/encoding/json/#NewEncoder
 */
 
 func (p *Products) ToJSON(w io.Writer) error {
