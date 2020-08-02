@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/gorilla/mux"
 	"github.com/jnprogrammer/go_microservices/product-api/handlers"
 	"log"
 	"net/http"
