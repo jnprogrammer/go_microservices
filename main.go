@@ -15,7 +15,7 @@ func main() {
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
 	ph := handlers.NewProducts(logger)
 
-	servemux := http.NewServeMux()
+	servemux := mux.NewRouter()
 	servemux.Handle("/", ph)
 
 	s := &http.Server{
