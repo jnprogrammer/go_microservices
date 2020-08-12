@@ -16,14 +16,17 @@ func main() {
 	ph := handlers.NewProducts(logger)
 
 	servemux := mux.NewRouter()
-	servemux.Handle("/", ph)
+
+	getRouter := servemux.Methods("GET").Subrouter()
+	getRouter.HandleFunc("/", ph)
+	servemux.Handle("/products", ph).Method("GET")
 
 	s := &http.Server{
 		Addr:         ":8710",
 		Handler:      servemux,
-		IdleTimeout:  120 * time.Second, //max time for connections using TCP keep-alive
-		ReadTimeout:  1 * time.Second,   //max time to read request from the client
-		WriteTimeout: 1 * time.Second,   //max time to write response to client
+		IdleTimeout:  1240 * time.Second, //max time for connections using TCP keep-alive
+		ReadTimeout:  3 * time.Second,    //max time to read request from the client
+		WriteTimeout: 3 * time.Second,    //max time to write response to client
 	}
 
 	go func() {
