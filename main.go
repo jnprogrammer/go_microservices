@@ -13,13 +13,14 @@ import (
 
 func main() {
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
+	//creates the handlers
 	ph := handlers.NewProducts(logger)
 
 	servemux := mux.NewRouter()
 
 	getRouter := servemux.Methods("GET").Subrouter()
-	getRouter.HandleFunc("/", ph)
-	servemux.Handle("/products", ph).Method("GET")
+	getRouter.HandleFunc("/", ph.GetProducts)
+	//servemux.Handle("/products", ph).Method("GET")
 
 	s := &http.Server{
 		Addr:         ":8710",
