@@ -10,107 +10,107 @@ import (
 )
 
 type Products struct {
-	l *log.Logger
+	logger *log.Logger
 }
 
-func NewProducts(l *log.Logger) *Products {
-	return &Products{l}
+func NewProducts(logger *log.Logger) *Products {
+	return &Products{logger}
 }
 
 //how standard GO manages sever requests before using a framework like Gorilla or gin
-func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		p.GetProducts(rw, r)
+func (products *Products) ServeHTTP(responsewriter http.ResponseWriter, request *http.Request) {
+	if request.Method == http.MethodGet {
+		products.GetProducts(responsewriter, request)
 		return
 	}
 	// handle an update
-	if r.Method == http.MethodPost {
-		p.AddProduct(rw, r)
+	if request.Method == http.MethodPost {
+		products.AddProduct(responsewriter, request)
 		return
 	}
 
-	if r.Method == http.MethodPut {
-		p.l.Println("PUT", r.URL.Path)
+	if request.Method == http.MethodPut {
+		products.logger.Println("PUT", request.URL.Path)
 		// expect the id in the uri
 		reg := regexp.MustCompile(`/([0-9]+)`)
-		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
+		g := reg.FindAllStringSubmatch(request.URL.Path, -1)
 
 		if len(g) != 1 {
-			p.l.Println("Invalid URI more than one ID ")
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
+			products.logger.Println("Invalid URI more than one ID ")
+			http.Error(responsewriter, "Invalid URI", http.StatusBadRequest)
 			return
 		}
 
 		if len(g[0]) != 2 {
-			p.l.Println("Invalid URI more than one capture group")
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
+			products.logger.Println("Invalid URI more than one capture group")
+			http.Error(responsewriter, "Invalid URI", http.StatusBadRequest)
 			return
 		}
 
 		idString := g[0][1]
 		_, err := strconv.Atoi(idString) // I need to handel this error gracefully
 		if err != nil {
-			p.l.Println("Invalid URI unable to convert to number", idString)
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
+			products.logger.Println("Invalid URI unable to convert to number", idString)
+			http.Error(responsewriter, "Invalid URI", http.StatusBadRequest)
 			return
 		}
-		p.UpdateProducts(rw, r)
+		products.UpdateProducts(responsewriter, request)
 		return
 	}
 
 	//catch all for not impalement handlers
-	rw.WriteHeader(http.StatusMethodNotAllowed)
+	responsewriter.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	lp := data.GetProducts()
-	err := lp.ToJSON(rw)
+func (products *Products) GetProducts(responsewriter http.ResponseWriter, request *http.Request) {
+	productlist := data.GetProducts()
+	err := productlist.ToJSON(responsewriter)
 	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+		http.Error(responsewriter, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
 
-func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle post product")
+func (products *Products) AddProduct(responsewriter http.ResponseWriter, request *http.Request) {
+	products.logger.Println("Handle post product")
 
 	prod := &data.Product{}
-	err := prod.FromJSON(r.Body)
+	err := prod.FromJSON(request.Body)
 
 	if err != nil {
-		http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)
+		http.Error(responsewriter, "Unable to unmarshal json", http.StatusBadRequest)
 	}
 
 	data.AddProduct(prod)
 }
 
-func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
+func (products Products) UpdateProducts(responsewriter http.ResponseWriter, request *http.Request) {
 
-	vars := mux.Vars(r)
+	vars := mux.Vars(request)
 	id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
-		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		http.Error(responsewriter, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
 
-	p.l.Println("Handle update product", id)
+	products.logger.Println("Handle update product", id)
 
 	prod := &data.Product{}
 
-	err = prod.FromJSON(r.Body)
+	err = prod.FromJSON(request.Body)
 
 	if err != nil {
-		http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)
+		http.Error(responsewriter, "Unable to unmarshal json", http.StatusBadRequest)
 	}
 
 	if err == data.UpdateProduct(id, prod) {
 		if err == data.ErrProductNotFound {
-			http.Error(rw, "Product not found", http.StatusInternalServerError)
+			http.Error(responsewriter, "Product not found", http.StatusInternalServerError)
 		}
 		return
 	}
 	if err != nil {
-		http.Error(rw, "internal error is found", http.StatusInternalServerError)
+		http.Error(responsewriter, "internal error is found", http.StatusInternalServerError)
 		return
 	}
 }
