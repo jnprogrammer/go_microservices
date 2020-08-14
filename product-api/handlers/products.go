@@ -87,7 +87,6 @@ func (products Products) UpdateProducts(responsewriter http.ResponseWriter, requ
 
 	vars := mux.Vars(request)
 	id, err := strconv.Atoi(vars["id"])
-
 	if err != nil {
 		http.Error(responsewriter, "Unable to convert id", http.StatusBadRequest)
 		return
@@ -96,9 +95,7 @@ func (products Products) UpdateProducts(responsewriter http.ResponseWriter, requ
 	products.logger.Println("Handle update product", id)
 
 	prod := &data.Product{}
-
 	err = prod.FromJSON(request.Body)
-
 	if err != nil {
 		http.Error(responsewriter, "updateproducts unable to unmarshal json", http.StatusBadRequest)
 	}
@@ -110,7 +107,7 @@ func (products Products) UpdateProducts(responsewriter http.ResponseWriter, requ
 		return
 	}
 	if err != nil {
-		http.Error(responsewriter, "internal error is found", http.StatusInternalServerError)
+		http.Error(responsewriter, "product isn't found", http.StatusInternalServerError)
 		return
 	}
 }
