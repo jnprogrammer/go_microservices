@@ -75,6 +75,7 @@ func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 
 	prod := &data.Product{}
 	err := prod.FromJSON(r.Body)
+
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)
 	}
@@ -91,11 +92,13 @@ func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
+
 	p.l.Println("Handle update product", id)
 
 	prod := &data.Product{}
 
 	err = prod.FromJSON(r.Body)
+
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)
 	}

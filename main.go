@@ -14,17 +14,20 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
 	//creates the handlers
-	putHeader := handlers.NewProducts(logger)
+	producthandler := handlers.NewProducts(logger)
 
 	servemux := mux.NewRouter()
 
 	getRouter := servemux.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", putHeader.GetProducts)
+	getRouter.HandleFunc("/", producthandler.GetProducts)
 
 	putRouter := servemux.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/{id:[0-9]+}", putHeader.UpdateProducts)
+	putRouter.HandleFunc("/{id:[0-9]+}", producthandler.UpdateProducts) //adds identifier by pulling it out of the string using regex
 
-	s := &http.Server{
+	postRouter := servemux.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", producthandler.AddProduct)
+
+	server := &http.Server{
 		Addr:         ":8710",
 		Handler:      servemux,
 		IdleTimeout:  1240 * time.Second, //max time for connections using TCP keep-alive
@@ -33,7 +36,7 @@ func main() {
 	}
 
 	go func() {
-		err := s.ListenAndServe()
+		err := server.ListenAndServe()
 		if err != nil {
 			logger.Fatal(err)
 		}
@@ -47,5 +50,5 @@ func main() {
 
 	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
-	s.Shutdown(tc)
+	server.Shutdown(tc)
 }

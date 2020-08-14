@@ -8,7 +8,7 @@ import (
 )
 
 type Hello struct {
-	l *log.Logger
+	logger *log.Logger
 }
 
 func NewHello(l *log.Logger) *Hello {
@@ -17,15 +17,15 @@ func NewHello(l *log.Logger) *Hello {
 
 //ServeHTTP implements the go http.Handler interface
 //https://golang.org/pkg/net/http/#Handler
-func (h *Hello) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	h.l.Println("Handle Hello requests !!!  !! ")
+func (handler *Hello) ServeHTTP(responsewriter http.ResponseWriter, r *http.Request) {
+	handler.logger.Println("Handle Hello requests !!!  !! ")
 
-	b, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		h.l.Println("HOW??!", err)
-		http.Error(rw, "Unable to read request body", http.StatusBadRequest)
+		handler.logger.Println("HOW??!", err)
+		http.Error(responsewriter, "Unable to read request body", http.StatusBadRequest)
 		return
 	}
 	// write the response
-	fmt.Fprintf(rw, "Hello %s", b)
+	fmt.Fprintf(responsewriter, "Hello %s", body)
 }
