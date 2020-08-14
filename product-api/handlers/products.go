@@ -66,7 +66,7 @@ func (products *Products) GetProducts(responsewriter http.ResponseWriter, reques
 	productlist := data.GetProducts()
 	err := productlist.ToJSON(responsewriter)
 	if err != nil {
-		http.Error(responsewriter, "Unable to marshal json", http.StatusInternalServerError)
+		http.Error(responsewriter, "getproducts unable to marshal json", http.StatusInternalServerError)
 	}
 }
 
@@ -77,7 +77,7 @@ func (products *Products) AddProduct(responsewriter http.ResponseWriter, request
 	err := prod.FromJSON(request.Body)
 
 	if err != nil {
-		http.Error(responsewriter, "Unable to unmarshal json", http.StatusBadRequest)
+		http.Error(responsewriter, "getproducts Unable to UGg unmarshal json", http.StatusBadRequest)
 	}
 
 	data.AddProduct(prod)
@@ -100,7 +100,7 @@ func (products Products) UpdateProducts(responsewriter http.ResponseWriter, requ
 	err = prod.FromJSON(request.Body)
 
 	if err != nil {
-		http.Error(responsewriter, "Unable to unmarshal json", http.StatusBadRequest)
+		http.Error(responsewriter, "updateproducts unable to unmarshal json", http.StatusBadRequest)
 	}
 
 	if err == data.UpdateProduct(id, prod) {
