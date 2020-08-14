@@ -14,13 +14,15 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
 	//creates the handlers
-	ph := handlers.NewProducts(logger)
+	putHeader := handlers.NewProducts(logger)
 
 	servemux := mux.NewRouter()
 
-	getRouter := servemux.Methods("GET").Subrouter()
-	getRouter.HandleFunc("/", ph.GetProducts)
-	//servemux.Handle("/products", ph).Method("GET")
+	getRouter := servemux.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", putHeader.GetProducts)
+
+	putRouter := servemux.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", putHeader.UpdateProducts)
 
 	s := &http.Server{
 		Addr:         ":8710",

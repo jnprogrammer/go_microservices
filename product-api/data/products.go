@@ -68,6 +68,7 @@ func findProduct(id int) (*Product, int, error) {
 	}
 	return nil, 0, ErrProductNotFound
 }
+
 func AddProduct(p *Product) {
 	p.ID = getNextID()
 	productList = append(productList, p)

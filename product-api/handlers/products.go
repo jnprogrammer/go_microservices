@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/jnprogrammer/go_microservices/product-api/data"
 	"log"
 	"net/http"
@@ -24,7 +25,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 	// handle an update
 	if r.Method == http.MethodPost {
-		p.addProduct(rw, r)
+		p.AddProduct(rw, r)
 		return
 	}
 
@@ -47,13 +48,13 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		}
 
 		idString := g[0][1]
-		id, err := strconv.Atoi(idString) // I need to handel this error gracefully
+		_, err := strconv.Atoi(idString) // I need to handel this error gracefully
 		if err != nil {
 			p.l.Println("Invalid URI unable to convert to number", idString)
 			http.Error(rw, "Invalid URI", http.StatusBadRequest)
 			return
 		}
-		p.updateProducts(id, rw, r)
+		p.UpdateProducts(rw, r)
 		return
 	}
 
@@ -69,7 +70,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle post product")
 
 	prod := &data.Product{}
@@ -81,12 +82,20 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	data.AddProduct(prod)
 }
 
-func (p Products) updateProducts(id int, rw http.ResponseWriter, r *http.Request) {
+func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 
-	p.l.Println("Handle update product")
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	p.l.Println("Handle update product", id)
 
 	prod := &data.Product{}
-	err := prod.FromJSON(r.Body)
+
+	err = prod.FromJSON(r.Body)
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)
 	}
