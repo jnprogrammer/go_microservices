@@ -19,7 +19,7 @@ func NewProducts(l *log.Logger) *Products {
 //how standard GO manages sever requests before using a framework like Gorilla or gin
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		p.getProducts(rw, r)
+		p.GetProducts(rw, r)
 		return
 	}
 	// handle an update
@@ -61,7 +61,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	lp := data.GetProducts()
 	err := lp.ToJSON(rw)
 	if err != nil {
