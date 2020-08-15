@@ -111,3 +111,19 @@ func (products Products) UpdateProducts(responsewriter http.ResponseWriter, requ
 		return
 	}
 }
+
+type KeyProduct struct {
+}
+
+//func (products Products) MiddlewareProductValidation(next http.Handler) http.Handler{
+//	return http.HandlerFunc(responsewriter http.ResponseWriter, request *http.Request){
+//		prod := &data.Product{}
+//		err = prod.FromJSON(request.Body)
+//		if err != nil {
+//			http.Error(responsewriter, "MiddlewareProductValidation unable to unmarshal json", http.StatusBadRequest)
+//			return
+//		}
+//		context := request.Context().WithValue()
+//		req :=
+//	}
+//}
