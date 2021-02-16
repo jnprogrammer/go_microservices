@@ -1,28 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		log.Println("Cardano time")
-		d, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(rw, "Oopps? ?", http.StatusBadRequest)
-			return
-		}
+	l := log.New(os.Stdout, " product-api", log.LstdFlags)
+	hh := handlers.NewHello(l)
 
-		//log.Printf("Data %s", d)
-		fmt.Fprintf(rw, "You sent the data: %s \n", d)
-	})
+	sm := http.NewServeMux()
+	sm.Handle("/", hh)
 
-	http.HandleFunc("/ADA", func(http.ResponseWriter, *http.Request) {
-		log.Println("₳")
-	})
-
+	//http.HandlerFunc()
 	http.ListenAndServe(":9090", nil)
 }
